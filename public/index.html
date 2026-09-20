@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta
+    name="description"
+    content="IZURAN — Parfums et fragrances."
+  >
+
+  <title>IZURAN — Parfums</title>
+
+  <link rel="stylesheet" href="/styles.css">
+</head>
+
+<body>
+
+<header class="site-header">
+
+  <a href="/" class="brand">
+    IZURAN
+  </a>
+
+  <nav>
+
+    <a href="#boutique">
+      Parfums
+    </a>
+
+    <a href="#infos">
+      Infos
+    </a>
+
+    <a href="#panier">
+      Panier
+      <span id="cartCount">0</span>
+    </a>
+
+  </nav>
+
+</header>
+
+
+<main>
+
+<section class="hero">
+
+  <div>
+
+    <p class="eyebrow">
+      IZURAN · PARFUMS
+    </p>
+
+    <h1>
+      L'essentiel
+      <br>
+      <span>du parfum.</span>
+    </h1>
+
+    <p>
+      Des fragrances choisies pour accompagner
+      chaque personnalité.
+    </p>
+
+    <a
+      class="button light"
+      href="#boutique">
+
+      Découvrir
+
+    </a>
+
+  </div>
+
+</section>
+
+
+<section
+  id="boutique"
+  class="section">
+
+  <div class="section-head">
+
+    <div>
+
+      <p class="eyebrow dark">
+        LA COLLECTION
+      </p>
+
+      <h2>
+        Nos parfums
+      </h2>
+
+    </div>
+
+
+    <div class="filters">
+
+      <button
+        class="filter active"
+        data-category="all">
+
+        Tous
+
+      </button>
+
+      <button
+        class="filter"
+        data-category="Femme">
+
+        Femme
+
+      </button>
+
+      <button
+        class="filter"
+        data-category="Homme">
+
+        Homme
+
+      </button>
+
+      <button
+        class="filter"
+        data-category="Mixte">
+
+        Mixte
+
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <div
+    id="products"
+    class="product-grid">
+
+  </div>
+
+</section>
+
+
+<section
+  id="panier"
+  class="section cart-section">
+
+  <div class="cart">
+
+    <p class="eyebrow dark">
+      VOTRE SÉLECTION
+    </p>
+
+    <h2>
+      Panier
+    </h2>
+
+
+    <div id="cartItems">
+
+    </div>
+
+
+    <div class="cart-total">
+
+      <span>
+        Total
+      </span>
+
+      <strong id="cartTotal">
+        0,00 €
+      </strong>
+
+    </div>
+
+
+    <div class="checkout-box">
+
+      <h3>
+        Finaliser
+      </h3>
+
+
+      <form id="checkoutForm">
+
+        <input
+          name="name"
+          required
+          placeholder="Nom et prénom"
+        >
+
+
+        <input
+          name="email"
+          type="email"
+          required
+          placeholder="E-mail"
+        >
+
+
+        <input
+          name="phone"
+          required
+          placeholder="Téléphone"
+        >
+
+
+        <select
+          name="fulfillment"
+          required>
+
+          <option value="">
+            Mode de réception
+          </option>
+
+          <option value="pickup">
+            Click & Collect
+          </option>
+
+          <option value="delivery">
+            Livraison
+          </option>
+
+        </select>
+
+
+        <div
+          id="pickupFields"
+          class="pickup-fields hidden">
+
+          <input
+            name="pickup_date"
+            type="date"
+          >
+
+          <input
+            name="pickup_time"
+            type="time"
+          >
+
+        </div>
+
+
+        <button
+          class="button dark"
+          type="submit">
+
+          Commander
+
+        </button>
+
+      </form>
+
+
+      <p class="small">
+
+        Le paiement sera activé lorsque
+        le prestataire de paiement sera configuré.
+
+      </p>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<section
+  id="infos"
+  class="section dark-section">
+
+  <p class="eyebrow">
+    IZURAN
+  </p>
+
+  <h2>
+    Une signature qui vous ressemble.
+  </h2>
+
+  <p>
+    Une boutique pensée pour présenter les
+    fragrances avec une expérience simple,
+    élégante et mobile-first.
+  </p>
+
+</section>
+
+</main>
+
+
+<footer>
+
+  <strong>
+    IZURAN
+  </strong>
+
+  <span>
+    © 2026 — Tous droits réservés.
+  </span>
+
+</footer>
+
+
+<script src="/app.js"></script>
+
+</body>
+</html>
