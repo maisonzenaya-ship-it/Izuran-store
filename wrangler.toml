@@ -8,4 +8,4 @@ directory = "./public"
 [[d1_databases]]
 binding = "DB"
 database_name = "izuran-db"
-database_id = "95f83d04-f503-4aa5-aee4-1292bd15925f"
+database_id = "00000000-00000006-000050ec-981b2ddd4b704e635ea08d090ac6fd70"
