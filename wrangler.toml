@@ -1,0 +1,29 @@
+name = "izuran"
+
+main = "src/worker.js"
+
+compatibility_date = "2026-09-20"
+
+
+# ==============================
+# SITE INTERNET
+# ==============================
+
+[assets]
+
+directory = "./public"
+
+binding = "ASSETS"
+
+
+# ==============================
+# BASE DE DONNÉES CLOUDFLARE D1
+# ==============================
+
+[[d1_databases]]
+
+binding = "DB"
+
+database_name = "izuran-db"
+
+database_id = "REMPLACER_PAR_ID_D1"
