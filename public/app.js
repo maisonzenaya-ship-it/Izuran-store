@@ -1,8 +1,50 @@
 const state = {
-  products: [],
-  cart: JSON.parse(
-    localStorage.getItem("izuran_cart") || "[]"
-  )
+
+  products: [
+
+    {
+      id: 1,
+      name: "Éclat Noir",
+      category: "Mixte",
+      description:
+        "Une fragrance élégante aux notes profondes.",
+      price_cents: 5900,
+      image:
+        "/assets/product-placeholder.svg",
+      stock: 12
+    },
+
+    {
+      id: 2,
+      name: "Velours Blanc",
+      category: "Femme",
+      description:
+        "Une composition douce et lumineuse.",
+      price_cents: 6500,
+      image:
+        "/assets/product-placeholder.svg",
+      stock: 8
+    },
+
+    {
+      id: 3,
+      name: "Noir Intense",
+      category: "Homme",
+      description:
+        "Une fragrance intense au caractère affirmé.",
+      price_cents: 6900,
+      image:
+        "/assets/product-placeholder.svg",
+      stock: 10
+    }
+
+  ],
+
+  cart:
+    JSON.parse(
+      localStorage.getItem("izuran_cart") || "[]"
+    )
+
 };
 
 
@@ -11,50 +53,20 @@ const state = {
 // ===============================
 
 function euro(cents) {
-  return (cents / 100).toLocaleString("fr-FR", {
-    style: "currency",
-    currency: "EUR"
-  });
-}
 
-
-// ===============================
-// CHARGER LES PRODUITS
-// ===============================
-
-async function loadProducts() {
-
-  try {
-
-    const response = await fetch("/api/products");
-
-    if (!response.ok) {
-      throw new Error("Erreur API");
+  return (cents / 100).toLocaleString(
+    "fr-FR",
+    {
+      style: "currency",
+      currency: "EUR"
     }
-
-    state.products = await response.json();
-
-    renderProducts("all");
-
-    renderCart();
-
-  } catch (error) {
-
-    console.error(error);
-
-    document.querySelector("#products").innerHTML = `
-      <p>
-        La boutique est momentanément indisponible.
-      </p>
-    `;
-
-  }
+  );
 
 }
 
 
 // ===============================
-// AFFICHER LES PRODUITS
+// PRODUITS
 // ===============================
 
 function renderProducts(category) {
@@ -62,34 +74,23 @@ function renderProducts(category) {
   const container =
     document.querySelector("#products");
 
+
   let products = state.products;
 
 
   if (category !== "all") {
 
-    products = products.filter(
-      product => product.category === category
-    );
+    products =
+      products.filter(
+        product =>
+          product.category === category
+      );
 
   }
 
 
-  if (!products.length) {
-
-    container.innerHTML = `
-      <p>
-        Aucun parfum disponible dans cette catégorie.
-      </p>
-    `;
-
-    return;
-
-  }
-
-
-  container.innerHTML = products.map(product => {
-
-    return `
+  container.innerHTML =
+    products.map(product => `
 
       <article class="product-card">
 
@@ -98,7 +99,6 @@ function renderProducts(category) {
           <img
             src="${escapeHtml(product.image)}"
             alt="${escapeHtml(product.name)}"
-            loading="lazy"
           >
 
         </div>
@@ -107,32 +107,24 @@ function renderProducts(category) {
         <div class="product-info">
 
           <div class="category">
-
             ${escapeHtml(product.category)}
-
           </div>
 
 
           <h3>
-
             ${escapeHtml(product.name)}
-
           </h3>
 
 
           <p class="description">
-
             ${escapeHtml(product.description)}
-
           </p>
 
 
           <div class="product-bottom">
 
             <span class="price">
-
               ${euro(product.price_cents)}
-
             </span>
 
 
@@ -140,9 +132,7 @@ function renderProducts(category) {
               class="add"
               onclick="addToCart(${product.id})"
             >
-
               Ajouter
-
             </button>
 
           </div>
@@ -151,15 +141,13 @@ function renderProducts(category) {
 
       </article>
 
-    `;
-
-  }).join("");
+    `).join("");
 
 }
 
 
 // ===============================
-// AJOUTER AU PANIER
+// PANIER
 // ===============================
 
 function addToCart(id) {
@@ -170,9 +158,7 @@ function addToCart(id) {
     );
 
 
-  if (!product) {
-    return;
-  }
+  if (!product) return;
 
 
   const existing =
@@ -183,14 +169,17 @@ function addToCart(id) {
 
   if (existing) {
 
-    if (existing.quantity < product.stock) {
+    if (
+      existing.quantity <
+      product.stock
+    ) {
 
       existing.quantity++;
 
     } else {
 
       alert(
-        "La quantité disponible en stock est atteinte."
+        "Stock maximum atteint."
       );
 
       return;
@@ -205,7 +194,8 @@ function addToCart(id) {
 
       name: product.name,
 
-      price_cents: product.price_cents,
+      price_cents:
+        product.price_cents,
 
       quantity: 1
 
@@ -229,10 +219,10 @@ function addToCart(id) {
 
 
 // ===============================
-// MODIFIER QUANTITÉ
+// QUANTITÉ
 // ===============================
 
-function changeQty(id, delta) {
+function changeQty(id, change) {
 
   const item =
     state.cart.find(
@@ -240,9 +230,7 @@ function changeQty(id, delta) {
     );
 
 
-  if (!item) {
-    return;
-  }
+  if (!item) return;
 
 
   const product =
@@ -251,37 +239,34 @@ function changeQty(id, delta) {
     );
 
 
-  if (!product) {
+  const quantity =
+    item.quantity + change;
+
+
+  if (quantity <= 0) {
+
+    removeItem(id);
+
     return;
+
   }
 
 
-  const newQuantity =
-    item.quantity + delta;
-
-
-  if (newQuantity <= 0) {
-
-    state.cart =
-      state.cart.filter(
-        item => item.id !== id
-      );
-
-  } else if (
-    newQuantity <= product.stock
+  if (
+    quantity >
+    product.stock
   ) {
 
-    item.quantity = newQuantity;
-
-  } else {
-
     alert(
-      "La quantité disponible en stock est atteinte."
+      "Stock maximum atteint."
     );
 
     return;
 
   }
+
+
+  item.quantity = quantity;
 
 
   saveCart();
@@ -311,7 +296,7 @@ function removeItem(id) {
 
 
 // ===============================
-// SAUVEGARDER LE PANIER
+// SAUVEGARDE
 // ===============================
 
 function saveCart() {
@@ -325,13 +310,16 @@ function saveCart() {
 
 
 // ===============================
-// AFFICHER LE PANIER
+// AFFICHER PANIER
 // ===============================
 
 function renderCart() {
 
   const container =
-    document.querySelector("#cartItems");
+    document.querySelector(
+      "#cartItems"
+    );
+
 
   const count =
     state.cart.reduce(
@@ -346,7 +334,9 @@ function renderCart() {
   ).textContent = count;
 
 
-  if (!state.cart.length) {
+  if (
+    state.cart.length === 0
+  ) {
 
     container.innerHTML = `
       <p>
@@ -354,9 +344,12 @@ function renderCart() {
       </p>
     `;
 
+
     document.querySelector(
       "#cartTotal"
-    ).textContent = "0,00 €";
+    ).textContent =
+      "0,00 €";
+
 
     return;
 
@@ -364,64 +357,56 @@ function renderCart() {
 
 
   container.innerHTML =
-    state.cart.map(item => {
+    state.cart.map(item => `
 
-      return `
+      <div class="cart-item">
 
-        <div class="cart-item">
-
-          <strong>
-            ${escapeHtml(item.name)}
-          </strong>
+        <strong>
+          ${escapeHtml(item.name)}
+        </strong>
 
 
-          <div class="qty">
+        <div class="qty">
 
-            <button
-              onclick="changeQty(${item.id}, -1)"
-            >
-              −
-            </button>
-
-
-            <span>
-              ${item.quantity}
-            </span>
+          <button
+            onclick="changeQty(${item.id}, -1)"
+          >
+            −
+          </button>
 
 
-            <button
-              onclick="changeQty(${item.id}, 1)"
-            >
-              +
-            </button>
-
-          </div>
-
-
-          <strong>
-
-            ${euro(
-              item.price_cents *
-              item.quantity
-            )}
-
-          </strong>
+          <span>
+            ${item.quantity}
+          </span>
 
 
           <button
-            class="remove"
-            onclick="removeItem(${item.id})"
+            onclick="changeQty(${item.id}, 1)"
           >
-
-            Supprimer
-
+            +
           </button>
 
         </div>
 
-      `;
 
-    }).join("");
+        <strong>
+          ${euro(
+            item.price_cents *
+            item.quantity
+          )}
+        </strong>
+
+
+        <button
+          class="remove"
+          onclick="removeItem(${item.id})"
+        >
+          Supprimer
+        </button>
+
+      </div>
+
+    `).join("");
 
 
   const total =
@@ -436,7 +421,8 @@ function renderCart() {
 
   document.querySelector(
     "#cartTotal"
-  ).textContent = euro(total);
+  ).textContent =
+    euro(total);
 
 }
 
@@ -482,29 +468,26 @@ document
 // CLICK & COLLECT
 // ===============================
 
-const fulfillment =
-  document.querySelector(
+document
+  .querySelector(
     'select[name="fulfillment"]'
+  )
+  .addEventListener(
+    "change",
+    event => {
+
+      document
+        .querySelector(
+          "#pickupFields"
+        )
+        .classList.toggle(
+          "hidden",
+          event.target.value !==
+            "pickup"
+        );
+
+    }
   );
-
-
-fulfillment.addEventListener(
-  "change",
-  event => {
-
-    const pickupFields =
-      document.querySelector(
-        "#pickupFields"
-      );
-
-
-    pickupFields.classList.toggle(
-      "hidden",
-      event.target.value !== "pickup"
-    );
-
-  }
-);
 
 
 // ===============================
@@ -512,15 +495,19 @@ fulfillment.addEventListener(
 // ===============================
 
 document
-  .querySelector("#checkoutForm")
+  .querySelector(
+    "#checkoutForm"
+  )
   .addEventListener(
     "submit",
-    async event => {
+    event => {
 
       event.preventDefault();
 
 
-      if (!state.cart.length) {
+      if (
+        state.cart.length === 0
+      ) {
 
         alert(
           "Votre panier est vide."
@@ -544,98 +531,81 @@ document
 
 
       data.items =
-        state.cart.map(item => ({
-          product_id: item.id,
-          quantity: item.quantity
-        }));
+        state.cart.map(
+          item => ({
 
+            id: item.id,
 
-      try {
+            name: item.name,
 
-        const response =
-          await fetch(
-            "/api/orders",
-            {
-              method: "POST",
+            quantity:
+              item.quantity,
 
-              headers: {
-                "Content-Type":
-                  "application/json"
-              },
+            price:
+              item.price_cents
 
-              body:
-                JSON.stringify(data)
-            }
-          );
-
-
-        const result =
-          await response.json();
-
-
-        if (!response.ok) {
-
-          alert(
-            result.error ||
-            "Une erreur est survenue."
-          );
-
-          return;
-
-        }
-
-
-        if (result.checkout_url) {
-
-          window.location.href =
-            result.checkout_url;
-
-          return;
-
-        }
-
-
-        alert(
-          "Commande " +
-          result.order_number +
-          " créée."
+          })
         );
 
 
-        state.cart = [];
-
-        saveCart();
-
-        renderCart();
-
-        event.target.reset();
-
-
-        document
-          .querySelector(
-            "#pickupFields"
-          )
-          .classList.add(
-            "hidden"
-          );
-
-
-      } catch (error) {
-
-        console.error(error);
-
-        alert(
-          "Impossible de contacter le serveur."
+      const total =
+        state.cart.reduce(
+          (sum, item) =>
+            sum +
+            item.price_cents *
+            item.quantity,
+          0
         );
 
-      }
+
+      data.total = total;
+
+
+      /*
+       * Pour cette première version,
+       * on prépare les informations
+       * de commande.
+       *
+       * Le paiement en ligne sera
+       * branché ensuite côté serveur.
+       */
+
+
+      console.log(
+        "Commande IZURAN :",
+        data
+      );
+
+
+      alert(
+        "Votre demande de commande a bien été préparée."
+      );
+
+
+      state.cart = [];
+
+
+      saveCart();
+
+      renderCart();
+
+      event.target.reset();
+
+
+      document
+        .querySelector(
+          "#pickupFields"
+        )
+        .classList.add(
+          "hidden"
+        );
 
     }
   );
 
 
 // ===============================
-// SÉCURITÉ AFFICHAGE
+// PROTECTION HTML
 // ===============================
 
 function escapeHtml(value) {
@@ -643,21 +613,15 @@ function escapeHtml(value) {
   return String(value)
     .replace(
       /[&<>"']/g,
-      character => {
+      character => ({
 
-        const characters = {
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
 
-          "&": "&amp;",
-          "<": "&lt;",
-          ">": "&gt;",
-          '"': "&quot;",
-          "'": "&#039;"
-
-        };
-
-        return characters[character];
-
-      }
+      })[character]
     );
 
 }
@@ -667,4 +631,6 @@ function escapeHtml(value) {
 // DÉMARRAGE
 // ===============================
 
-loadProducts();
+renderProducts("all");
+
+renderCart();
